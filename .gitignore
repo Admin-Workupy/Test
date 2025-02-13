@@ -1,0 +1,7 @@
+.vscode/
+
+env/.env.*
+!env/.env.*.example
+
+/compose.yml
+/compose.yaml

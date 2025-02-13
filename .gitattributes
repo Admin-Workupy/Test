@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+*.md diff=markdown
+
+*.yaml linguist-detectable=true
+*.sql  linguist-detectable=true
+
+*.conf.template linguist-language=Nginx linguist-detectable=true
+*_params        linguist-language=Nginx linguist-detectable=true
+
+.env.*.example linguist-language=INI

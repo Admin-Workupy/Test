@@ -1,0 +1,21 @@
+resolver ${DOCKER_RESOLVER_IP};
+
+server {
+  listen ${HTTP_PORT};
+
+  server_name ${DNS_HOST};
+
+  include proxy_params;
+
+  client_max_body_size 50m;
+
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
+
+    proxy_pass http://${CONTAINER_BACKEND_NAME}:${HTTP_PORT_BACKEND};
+  }
+
+  location / {
+    proxy_pass http://${CONTAINER_FRONTEND_NAME}:${HTTP_PORT_FRONTEND};
+  }
+}

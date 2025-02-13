@@ -1,0 +1,89 @@
+/////////////////////////////////////
+//   DEFINIÇÃO DO BANCO DE DADOS   //
+/////////////////////////////////////
+// Este arquivo escrito em DBML    //
+// serve para facilmente entender  //
+// a estrutura das tabelas do      //
+// banco de dados e também pode    //
+// ser reusado para gerar código   //
+// SQL de outros RDBMS.            //
+/////////////////////////////////////
+
+Project workupy_test {
+  database_type: 'MySQL'
+  Note: 'Application test for Workupy LTDA'
+}
+
+Table users {
+  id bigint [increment, not null, pk]
+  name varchar(255) [not null]
+  username varchar(255) [not null, unique]
+  email varchar(255) [not null, unique]
+  password varchar(255) [not null]
+}
+
+Table projects {
+  id bigint [increment, not null, pk]
+  user_id bigint [not null]
+  name varchar(255) [not null]
+  slug varchar(255) [not null, unique]
+}
+
+Table pages {
+  id bigint [increment, not null, pk]
+  project_id bigint [not null]
+  name varchar(255) [not null]
+  title varchar(255) [not null, note: 'Represents the HTML title tag']
+  path varchar(255) [not null]
+  index boolean [not null, note: 'Determines if the page will represents the index (/)']
+}
+
+Table elements {
+  id bigint [increment, not null, pk]
+  uuid binary(16) [not null, unique, default: `UUID_TO_BIN(UUID())`]
+  page_id bigint [not null]
+  parent_id bigint
+  name varchar(255) [not null]
+  tag varchar(255) [not null, note: 'Represents the HTML valid tags']
+  x float [not null]
+  y float [not null]
+}
+
+Table elements_attributes {
+  id bigint [increment, not null, pk]
+  element_id bigint [not null]
+  attribute varchar(255) [not null, note: 'Represents the HTML valid attributes']
+  value varchar(255) [not null]
+}
+
+Table elements_style_props {
+  id bigint [increment, not null, pk]
+  element_id bigint [not null]
+  property varchar(255) [not null, note: 'Represents the CSS valid properties']
+  value varchar(255) [not null]
+  unit varchar(255) [note: 'Represents the CSS valid units']
+}
+
+Ref user_projects_fk {
+  users.id < projects.user_id [delete: cascade, update: cascade]
+}
+
+Ref project_pages_fk {
+  projects.id < pages.project_id [delete: cascade, update: cascade]
+}
+
+Ref page_elements_fk {
+  pages.id < elements.page_id [delete: cascade, update: cascade]
+}
+
+Ref element_attributes_fk {
+  elements.id < elements_attributes.element_id [delete: cascade, update: cascade]
+}
+
+Ref element_style_props_fk {
+  elements.id < elements_style_props.element_id [delete: cascade, update: cascade]
+}
+
+Ref element_parent_fk {
+  elements.id - elements.parent_id [delete: cascade, update: cascade]
+}
