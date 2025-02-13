@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = modules/backend
+	url = https://github.com/Admin-Workupy/Test-Backend
+[submodule "frontend"]
+	path = modules/frontend
+	url = https://github.com/Admin-Workupy/Test-Frontend
