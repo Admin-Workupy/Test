@@ -42,7 +42,9 @@ O desafio para cada teste você encontra dentro dos respectivos módulos.
   docker compose -f docker/compose.yaml build node
   ```
 
-  Você também pode criar um arquivo `compose.yaml` diretamente na raiz do projeto.
+  A partir daqui, use os arquivos `docker/compose.yaml`, `modules/backend/compose.yaml`
+  e `modules/frontend/compose.yaml` para manipular os containers, ou também se
+  pode criar um arquivo `compose.yaml` diretamente na raiz do projeto.
 
   Este é um exemplo:
 
@@ -77,7 +79,7 @@ O desafio para cada teste você encontra dentro dos respectivos módulos.
       networks:
         - workupy-test-net
       volumes:
-        - ./modules/backend:/home/workupy/src:rw
+        - ./modules/backend/src:/home/workupy/src:rw
     frontend:
       extends:
         service: frontend
@@ -89,7 +91,7 @@ O desafio para cada teste você encontra dentro dos respectivos módulos.
       networks:
         - workupy-test-net
       volumes:
-        - ./modules/frontend:/home/workupy/src:rw
+        - ./modules/frontend/src:/home/workupy/src:rw
   networks:
     workupy-test-net:
       name: 'workupy-test-net'
