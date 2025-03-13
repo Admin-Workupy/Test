@@ -4,20 +4,32 @@ main() {
   SCRIPT_PATH="$(set_script_path)"
   ROOT_PATH="$(dirname "$SCRIPT_PATH")"
 
-  dns_host="$(cat -n /etc/hosts | grep '^ *3' | awk '{print $3}')-444.csb.app"
-
-  for container in ingress frontend; do
+  for container in mysql backend frontend nginx; do
     docker compose -f "$ROOT_PATH/compose.yaml" stop $container && \
       echo y | docker compose -f "$ROOT_PATH/compose.yaml" rm $container
 
     case $container in
-      ingress)
-        sed -i "s/^DNS_HOST=.*/DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.nginx"
+      mysql)
+        sed -i 's/^DB_PORT=.*/DB_PORT=3306/' "$ROOT_PATH/env/.env.backend"
+      ;;
+
+      backend)
+        sed -i 's/^HTTP_PORT=.*/HTTP_PORT=8000/' "$ROOT_PATH/env/.env.backend"
+
+        sed -i 's/^HTTP_PORT_BACKEND=.*/HTTP_PORT_BACKEND=8000/' "$ROOT_PATH/env/.env.nginx"
       ;;
 
       frontend)
-        sed -i "s/^DNS_HOST=.*/DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.$container"
-        sed -i "s/^VITE_DNS_HOST=.*/VITE_DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.$container"
+        sed -i 's/^HTTP_PORT=.*/HTTP_PORT=3000/' "$ROOT_PATH/env/.env.frontend"
+        sed -i 's/^VITE_HTTP_PORT=.*/VITE_HTTP_PORT=3000/' "$ROOT_PATH/env/.env.frontend"
+
+        sed -i 's/^HTTP_PORT_BACKEND=.*/HTTP_PORT_BACKEND=3000/' "$ROOT_PATH/env/.env.nginx"
+      ;;
+
+      nginx)
+        sed -i 's/^HTTP_PORT=.*/HTTP_PORT=4444/' "$ROOT_PATH/env/.env.nginx"
+
+        sed 's/^\(\s*- \)8080:8080/\14444:4444/' "$ROOT_PATH/compose.yaml"
       ;;
     esac
   done
@@ -68,4 +80,4 @@ set_script_path() (
   echo "$SCRIPT_PATH"
 )
 
-main
+main "$@"

@@ -4,25 +4,29 @@ main() {
   SCRIPT_PATH="$(set_script_path)"
   ROOT_PATH="$(dirname "$SCRIPT_PATH")"
 
-  dns_host="$(cat -n /etc/hosts | grep '^ *3' | awk '{print $3}')-444.csb.app"
+  mysql_root_password="$(gpg --gen-random --armor 1 64 | tr -d "=+/" | cut -c1-25)"
 
-  for container in ingress frontend; do
+  for container in mysql backend; do
     docker compose -f "$ROOT_PATH/compose.yaml" stop $container && \
       echo y | docker compose -f "$ROOT_PATH/compose.yaml" rm $container
 
     case $container in
-      ingress)
-        sed -i "s/^DNS_HOST=.*/DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.nginx"
+      mysql)
+        sed -i "s/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=$mysql_root_password/" "$ROOT_PATH/env/.env.mysql"
       ;;
 
-      frontend)
-        sed -i "s/^DNS_HOST=.*/DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.$container"
-        sed -i "s/^VITE_DNS_HOST=.*/VITE_DNS_HOST=$dns_host/" "$ROOT_PATH/env/.env.$container"
+      backend)
+        sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$mysql_root_password/" "$ROOT_PATH/env/.env.backend"
+        sed -i 's/^DB_HOST=.*/DB_HOST=database/' "$ROOT_PATH/env/.env.backend"
       ;;
     esac
-  done
 
-  docker compose -f "$ROOT_PATH/compose.yaml" up -d
+    docker compose -f "$ROOT_PATH/compose.yaml" up -d $container
+
+    if [ $container = 'mysql' ]; then
+      sleep 5
+    fi
+  done
 }
 
 set_script_path() (
@@ -68,4 +72,4 @@ set_script_path() (
   echo "$SCRIPT_PATH"
 )
 
-main
+main "$@"

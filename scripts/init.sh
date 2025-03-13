@@ -11,6 +11,12 @@ main() {
   build_images
 
   echompose
+
+  fixes
+
+  printf \
+    'Verifique os arquivos na pasta %s/env e o arquivo %s/compose.yaml para configurar as variáveis de ambiente!' \
+    "$ROOT_PATH" "$ROOT_PATH"
 }
 
 git_submodule_update() {
@@ -91,9 +97,15 @@ echompose() {
     echo 'networks:'
     echo '  workupy-test-net:'
     echo '    name: 'workupy-test-net''
-  } > "$ROOT_PATH/compose.yaml"
+  } > "$ROOT_PATH/compose.yaml"  
+}
 
-  echo "Verifique os arquivos na pasta $ROOT_PATH/env e o arquivo $ROOT_PATH/compose.yaml para configurar as variáveis de ambiente!"
+fixes() {
+  sh "$SCRIPT_PATH/db-fix.sh" && \
+  sh "$SCRIPT_PATH/dns-fix.sh" && \
+  sh "$SCRIPT_PATH/port-fix.sh"
+
+  clear
 }
 
 set_script_path() (
