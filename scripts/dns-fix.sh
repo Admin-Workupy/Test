@@ -4,7 +4,7 @@ main() {
   SCRIPT_PATH="$(set_script_path)"
   ROOT_PATH="$(dirname "$SCRIPT_PATH")"
 
-  dns_host="$(cat -n /etc/hosts | grep '^ *3' | awk '{print $3}')-444.csb.app"
+  dns_host="$(cat -n /etc/hosts | grep '^ *3' | awk '{print $3}')-4444.csb.app"
 
   for container in ingress frontend; do
     docker compose -f "$ROOT_PATH/compose.yaml" stop $container && \
