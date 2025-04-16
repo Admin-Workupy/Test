@@ -3,9 +3,10 @@
 Seja bem-vindo(a)!
 
 **Para inicializar, você pode executar diretamente o script `init.sh` ou seguir**
-**os passos a seguir manualmente.**
+**os passos abaixo manualmente.**
 
-O desafio para cada teste você encontra dentro dos respectivos módulos.
+O desafio para cada teste você encontra dentro dos respectivos módulos. Mais dicas
+podem ser vistas [aqui](./docs/README.md).
 
 <details>
 
@@ -19,7 +20,15 @@ O desafio para cada teste você encontra dentro dos respectivos módulos.
   Para isso, execute os seguintes comando na pasta raiz:
 
   ```sh
-  git submodule update --init --recursive --remote
+  # Primeiramente altere as URLs para as suas
+  git submodule set-url modules/backend https://github.com/$SEU_USUARIO/$NOME_DO_REPO
+  git submodule set-url modules/frontend https://github.com/$SEU_USUARIO/$NOME_DO_REPO
+
+  # Faça o download dos repositórios
+  git submodule update --init --remote
+
+  # Atualize eles para a branch main
+  git submodule foreach git checkout main
   ```
 
   Após isso, copie os arquivos de ambiente necessários:

@@ -12,15 +12,23 @@ main() {
 
   echompose
 
-  fixes
-
   printf \
     'Verifique os arquivos na pasta %s/env e o arquivo %s/compose.yaml para configurar as variáveis de ambiente!' \
     "$ROOT_PATH" "$ROOT_PATH"
 }
 
 git_submodule_update() {
+  for module in backend frontend; do
+    printf "Por favor, insira a URL do submódulo \"%s\": " "$module"
+
+    read -r url
+
+    git submodule set-url "modules/$module" "$url"
+  done
+
   git -C "$ROOT_PATH" submodule update --init --recursive --remote
+
+  git -C "$ROOT_PATH" submodule foreach 'git checkout main && git pull'
 
   clear
 }
@@ -97,15 +105,7 @@ echompose() {
     echo 'networks:'
     echo '  workupy-test-net:'
     echo '    name: 'workupy-test-net''
-  } > "$ROOT_PATH/compose.yaml"  
-}
-
-fixes() {
-  sh "$SCRIPT_PATH/db-fix.sh" && \
-  sh "$SCRIPT_PATH/dns-fix.sh" && \
-  sh "$SCRIPT_PATH/port-fix.sh"
-
-  clear
+  } > "$ROOT_PATH/compose.yaml"
 }
 
 set_script_path() (

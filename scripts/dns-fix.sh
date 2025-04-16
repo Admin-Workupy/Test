@@ -1,5 +1,11 @@
 #! /bin/sh
 
+################################################
+# Este script é uma FIX feita para agilizar a  #
+# resolução de problemas comuns encontrados no #
+# CodeSandbox. Por favor, não o execute.       #
+################################################
+
 main() {
   SCRIPT_PATH="$(set_script_path)"
   ROOT_PATH="$(dirname "$SCRIPT_PATH")"

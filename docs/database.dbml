@@ -8,6 +8,9 @@
 // ser reusado para gerar código   //
 // SQL de outros RDBMS.            //
 /////////////////////////////////////
+// Você pode visualizar o diagrama //
+// em <https://dbdiagram.io/d>.    //
+/////////////////////////////////////
 
 Project workupy_test {
   database_type: 'MySQL'
